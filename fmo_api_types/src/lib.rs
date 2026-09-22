@@ -75,7 +75,12 @@ pub enum DiscrepancyKind {
     UnclaimedByAnyGuardian,
     ClaimedByGuardianOnly { peer_id: u16 },
     AmountMismatch { peer_id: u16, guardian_amount: Amount, observed_amount: Amount },
-    GuardianDisagreement { peer_ids: Vec<u16> },
+    /// Multiple guardians agree on a UTXO the observer never saw on-chain.
+    /// Likely means the observer's index is behind, not a real problem.
+    MissedByObserver { peer_ids: Vec<u16> },
+    /// Guardians genuinely disagree with each other (conflicting amounts)
+    /// about the same outpoint.
+    GuardianConflict { peer_ids: Vec<u16>, amounts: Vec<Amount> },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
